@@ -68,7 +68,7 @@ namespace OrderServiceManagement.Infrastructure.Services
                     await _repository.AddAsync(orderItem);
                 }
                 await _repository.SaveChangesAsync();
-                bool rollbackResult = await _inventoryService.RollbackStock(request.ProductId, request.Quantity);
+               //bool rollbackResult = await _inventoryService.RollbackStock(request.ProductId, request.Quantity);
 
                 return new Dictionary<bool, string> {
                 { true, "Order created successfully" }
@@ -77,7 +77,7 @@ namespace OrderServiceManagement.Infrastructure.Services
             catch (Exception ex)
             {
                 // rollback
-                bool rollbackResult = await _inventoryService.RollbackStock(request.ProductId, request.Quantity); 
+                bool rollbackResult = await _inventoryService.RollbackStock(request.ProductId, request.Quantity);
                 if(rollbackResult)
                 {
                     return new Dictionary<bool, string> {{ false, "Order creation failed, stock rollback successful" }};
@@ -97,12 +97,16 @@ namespace OrderServiceManagement.Infrastructure.Services
 
         public async Task<Order> GetOrderById(Guid orderId)
         {
-            var order =await _repository.GetById(orderId);
+        
+                var order = await _repository.GetById(orderId);
 
-            if (order == null)
-                throw new Exception("Order not found");
+                if (order == null)
+                    throw new Exception("Order not found");
 
-            return order;
+                return order;
+            
+
+           
         }
 
         public async Task CancelOrder(Guid orderId)

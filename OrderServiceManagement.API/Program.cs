@@ -10,12 +10,20 @@ using OrderServiceManagement.Application.Middleware;
 using OrderServiceManagement.Infrastructure.Data;
 using OrderServiceManagement.Infrastructure.Repositories;
 using OrderServiceManagement.Infrastructure.Services;
+using Serilog;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-  
-// Add services to the container.
 
+///SeriLog configuration
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.File(
+        "Logs/log.txt",
+        rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+// Add services to the container.
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
@@ -92,7 +100,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
